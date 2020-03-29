@@ -1,8 +1,9 @@
 import { describe, it } from "mocha";
 import { expect } from "chai";
+import { drawResizedFromManifest } from "./index";
 
-describe("index", () => {
-  it("no tests defined yet", async () => {
-    expect(true).to.equal(true);
+describe("drawResized", () => {
+  it("drawResizedFromManifest", async () => {
+    await drawResizedFromManifest(__dirname + "/../test/manifest.json");
   });
 });

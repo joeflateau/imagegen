@@ -1,0 +1,28 @@
+{
+  "sources": {
+    "icon": { "filename": "icon.png" },
+    "background": { "filename": "bg.png" }
+  },
+  "outputs": [
+    {
+      "filename": "out/icon_focus_hd.png",
+      "size": { "width": 336, "height": 210 }
+    },
+    {
+      "filename": "out/icon_focus_sd.png",
+      "size": { "width": 248, "height": 140 }
+    },
+    {
+      "filename": "out/splash_fhd.jpg",
+      "size": { "width": 1920, "height": 1080 }
+    },
+    {
+      "filename": "out/splash_hd.jpg",
+      "size": { "width": 1280, "height": 720 }
+    },
+    {
+      "filename": "out/splash_sd.jpg",
+      "size": { "width": 720, "height": 480 }
+    }
+  ]
+}
