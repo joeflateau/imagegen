@@ -14,7 +14,7 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
     const canvas = createCanvas(output.size.width, output.size.height);
     if (manifest.sources.background) {
       const image = await loadImage(
-        joinPath(manifestFilePath, manifest.sources.background.filename)
+        joinPath(manifestFilePath, "..", manifest.sources.background.filename)
       );
       canvas.getContext("2d").drawImage(image);
     }
@@ -26,7 +26,9 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
     }
     canvas
       .createPNGStream()
-      .pipe(createWriteStream(joinPath(manifestFilePath, output.filename)));
+      .pipe(
+        createWriteStream(joinPath(manifestFilePath, "..", output.filename))
+      );
   }
 }
 
