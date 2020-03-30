@@ -6,6 +6,15 @@ export function fitRect(
     insetPct = 0
   }: { fitMode?: FitMode; insetPct?: number } = {}
 ) {
+  const inset = Math.min(target.width, target.height) * insetPct;
+
+  target = {
+    x: target.x + inset,
+    y: target.y + inset,
+    width: target.width - inset * 2,
+    height: target.height - inset * 2
+  };
+
   const sw = target.width / rect.width;
   const sh = target.height / rect.height;
 
@@ -16,13 +25,11 @@ export function fitRect(
     scale = Math.max(sw, sh);
   }
 
-  const inset = Math.min(target.width, target.height) * insetPct;
-
   return {
-    x: target.x + (target.width - rect.width * scale) / 2 + inset,
-    y: target.y + (target.height - rect.height * scale) / 2 + inset,
-    width: rect.width * scale + inset * 2,
-    height: rect.height * scale + inset * 2
+    x: target.x + (target.width - rect.width * scale) / 2,
+    y: target.y + (target.height - rect.height * scale) / 2,
+    width: rect.width * scale,
+    height: rect.height * scale
   };
 }
 

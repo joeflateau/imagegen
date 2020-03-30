@@ -69,6 +69,7 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
     await mkdirp(joinPath(manifestFilePath, "..", output.filename, ".."));
     await writeFile(joinPath(manifestFilePath, "..", output.filename), buffer);
   }
+  return manifest;
 }
 
 if (require.main === module) {
