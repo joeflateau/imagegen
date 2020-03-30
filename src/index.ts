@@ -11,40 +11,37 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
   ) as Manifest;
 
   for (const output of manifest.outputs) {
-    const canvas = createCanvas(output.size.width, output.size.height);
-    if (manifest.sources.background) {
-      const image = await loadImage(
-        joinPath(manifestFilePath, "..", manifest.sources.background.filename)
-      );
-      const cover = fitRect(
-        { x: 0, y: 0, width: image.width, height: image.height },
-        { x: 0, y: 0, width: canvas.width, height: canvas.height },
-        "cover"
-      );
+    const canvas = createCanvas(output.width, output.height);
 
-      canvas
-        .getContext("2d")
-        .drawImage(image, cover.x, cover.y, cover.width, cover.height);
-    }
-    if (manifest.sources.icon) {
-      const image = await loadImage(
-        joinPath(manifestFilePath, "..", manifest.sources.icon.filename)
-      );
-      const inset = Math.min(canvas.width, canvas.height) * 0.1;
-      const contain = fitRect(
-        { x: 0, y: 0, width: image.width, height: image.height },
-        {
-          x: inset,
-          y: inset,
-          width: canvas.width - inset * 2,
-          height: canvas.height - inset * 2
-        },
-        "contain"
-      );
+    for (const [layerName, sourceFile] of Object.entries(manifest.sources)) {
+      if (output.layers == null || output.layers[layerName] != null) {
+        const { insetPct, fitMode } = {
+          ...{ insetPct: 0, fitMode: "cover" },
+          ...output.layers?.[layerName],
+          ...sourceFile
+        };
 
-      canvas
-        .getContext("2d")
-        .drawImage(image, contain.x, contain.y, contain.width, contain.height);
+        const image = await loadImage(
+          joinPath(manifestFilePath, "..", sourceFile.filename)
+        );
+
+        const inset = Math.min(canvas.width, canvas.height) * insetPct;
+
+        const cover = fitRect(
+          { x: 0, y: 0, width: image.width, height: image.height },
+          {
+            x: inset,
+            y: inset,
+            width: canvas.width - inset * 2,
+            height: canvas.height - inset * 2
+          },
+          fitMode
+        );
+
+        canvas
+          .getContext("2d")
+          .drawImage(image, cover.x, cover.y, cover.width, cover.height);
+      }
     }
 
     const buffer = toBuffer(canvas, parsePath(output.filename).ext);
@@ -52,6 +49,7 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
     await writeFile(joinPath(manifestFilePath, "..", output.filename), buffer);
   }
 }
+
 if (require.main === module) {
   program.arguments("<manifestFilename>").action(async manifestFile => {
     await drawResizedFromManifest(manifestFile);
@@ -70,16 +68,16 @@ function toBuffer(canvas: Canvas, ext: string) {
   throw new Error("unknown file extension");
 }
 
-function fitRect(rect: Rect, target: Rect, mode: "contain" | "cover") {
-  mode = mode || "contain";
+function fitRect(rect: Rect, target: Rect, fitMode: FitMode) {
+  fitMode = fitMode || "contain";
 
   var sw = target.width / rect.width;
   var sh = target.height / rect.height;
   var scale = 1;
 
-  if (mode == "contain") {
+  if (fitMode == "contain") {
     scale = Math.min(sw, sh);
-  } else if (mode == "cover") {
+  } else if (fitMode == "cover") {
     scale = Math.max(sw, sh);
   }
 
@@ -99,23 +97,25 @@ export interface Rect {
 }
 
 export interface Manifest {
-  sources: {
-    icon?: SourceFile;
-    background?: SourceFile;
-  };
+  sources: Sources;
   outputs: OutputFile[];
+}
+
+export interface Sources {
+  [key: string]: SourceFile;
 }
 
 export interface SourceFile {
   filename: string;
+  insetPct: number;
+  fitMode: FitMode;
 }
 
 export interface OutputFile {
   filename: string;
-  size: OutputFileSize;
-}
-
-export interface OutputFileSize {
   width: number;
   height: number;
+  layers: { [key in keyof Sources]: { insetPct: number } };
 }
+
+export type FitMode = "contain" | "cover";
