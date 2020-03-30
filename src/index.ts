@@ -43,8 +43,6 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
           joinPath(manifestFilePath, "..", flattenedSources[layerName].filename)
         );
 
-        const inset = Math.min(canvas.width, canvas.height) * insetPct;
-
         const cover = fitRect(
           {
             x: 0,
@@ -53,12 +51,12 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
             height: image.height
           },
           {
-            x: inset,
-            y: inset,
-            width: canvas.width - inset * 2,
-            height: canvas.height - inset * 2
+            x: 0,
+            y: 0,
+            width: canvas.width,
+            height: canvas.height
           },
-          fitMode
+          { fitMode, insetPct }
         );
 
         canvas

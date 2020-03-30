@@ -1,5 +1,11 @@
-export function fitRect(rect: Rect, target: Rect, fitMode: FitMode) {
-  fitMode = fitMode || "contain";
+export function fitRect(
+  rect: Rect,
+  target: Rect,
+  {
+    fitMode = "contain",
+    insetPct = 0
+  }: { fitMode?: FitMode; insetPct?: number } = {}
+) {
   const sw = target.width / rect.width;
   const sh = target.height / rect.height;
 
@@ -10,11 +16,13 @@ export function fitRect(rect: Rect, target: Rect, fitMode: FitMode) {
     scale = Math.max(sw, sh);
   }
 
+  const inset = Math.min(target.width, target.height) * insetPct;
+
   return {
-    x: target.x + (target.width - rect.width * scale) / 2,
-    y: target.y + (target.height - rect.height * scale) / 2,
-    width: rect.width * scale,
-    height: rect.height * scale
+    x: target.x + (target.width - rect.width * scale) / 2 + inset,
+    y: target.y + (target.height - rect.height * scale) / 2 + inset,
+    width: rect.width * scale + inset * 2,
+    height: rect.height * scale + inset * 2
   };
 }
 
