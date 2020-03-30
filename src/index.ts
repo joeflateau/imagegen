@@ -17,8 +17,8 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
       if (output.layers == null || output.layers[layerName] != null) {
         const { insetPct, fitMode } = {
           ...{ insetPct: 0, fitMode: "cover" },
-          ...output.layers?.[layerName],
-          ...sourceFile
+          ...sourceFile,
+          ...output.layers?.[layerName]
         };
 
         const image = await loadImage(
