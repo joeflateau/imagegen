@@ -18,7 +18,8 @@
     {
       "filename": "out/splash_fhd.jpg",
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "layers": [{ "icon": {} }, { "background": {} }]
     },
     {
       "filename": "out/splash_hd.jpg",
