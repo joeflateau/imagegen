@@ -7,7 +7,8 @@
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "build": "tsc",
     "prepare": "tsc",
-    "prepublishOnly": "npm run test"
+    "prepublishOnly": "npm run test",
+    "release": "./scripts/release.sh"
   },
   "files": [
     "dist"
