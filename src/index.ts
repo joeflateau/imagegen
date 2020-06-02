@@ -4,15 +4,21 @@ import { readFile, writeFile, mkdirp } from "fs-extra";
 import { join as joinPath, parse as parsePath } from "path";
 import { createCanvas, loadImage } from "canvas";
 import program from "commander";
+import { stringFromTemplate } from "var-sub";
 
 import { fitRect, FitMode } from "./lib/fitRect";
 import { Manifest } from "./lib/manifest";
 import { toBuffer } from "./lib/toBuffer";
 import { flattenRecords } from "./lib/flattenRecords";
 
-export async function drawResizedFromManifest(manifestFilePath: string) {
+export async function drawResizedFromManifest(
+  manifestFilePath: string,
+  variables?: Record<string, string>
+) {
   const manifest = JSON.parse(
-    await readFile(manifestFilePath, "utf8")
+    stringFromTemplate(await readFile(manifestFilePath, "utf8"), {
+      ...variables,
+    })
   ) as Manifest;
 
   const flattenedSources = flattenRecords(manifest.sources);
@@ -33,10 +39,10 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
         const { insetPct, fitMode } = {
           ...{
             insetPct: 0,
-            fitMode: "cover" as FitMode
+            fitMode: "cover" as FitMode,
           },
           ...flattenedSources[layerName],
-          ...flattenedOutputLayers?.[layerName]
+          ...flattenedOutputLayers?.[layerName],
         };
 
         const image = await loadImage(
@@ -48,13 +54,13 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
             x: 0,
             y: 0,
             width: image.width,
-            height: image.height
+            height: image.height,
           },
           {
             x: 0,
             y: 0,
             width: canvas.width,
-            height: canvas.height
+            height: canvas.height,
           },
           { fitMode, insetPct }
         );
@@ -73,8 +79,20 @@ export async function drawResizedFromManifest(manifestFilePath: string) {
 }
 
 if (require.main === module) {
-  program.arguments("<manifestFilename>").action(async manifestFile => {
-    await drawResizedFromManifest(manifestFile);
-  });
+  program
+    .arguments("<manifestFilename>")
+    .option(
+      "-v,--var",
+      "variables",
+      (variable, prev) => {
+        const [key, value] = variable.split("=");
+        prev[key] = value;
+        return prev;
+      },
+      {} as Record<string, string>
+    )
+    .action(async (manifestFile) => {
+      await drawResizedFromManifest(manifestFile);
+    });
   program.parse(process.argv);
 }

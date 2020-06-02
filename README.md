@@ -1,6 +1,11 @@
 # imagegen
 
+## Usage
 
+`imagegen [options] <manifestFilename>`
+
+Options:
+`-h`, `--help` display help for command
 
 This project was bootstrapped with [TSPx](https://github.com/joeflateau/tspx).
 
