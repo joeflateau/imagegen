@@ -93,7 +93,12 @@ if (require.main === module) {
       {} as Record<string, string>
     )
     .action(async (manifestFile) => {
-      await drawResizedFromManifest(manifestFile);
+      try {
+        await drawResizedFromManifest(manifestFile, program.var);
+      } catch (err) {
+        console.error(`${err.name}: ${err.message}`);
+        process.exit(1);
+      }
     });
   program.parse(process.argv);
 }
