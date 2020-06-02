@@ -82,11 +82,12 @@ if (require.main === module) {
   program
     .arguments("<manifestFilename>")
     .option(
-      "-v,--var",
+      "-v,--var <keyValuePair>",
       "variables",
       (variable, prev) => {
         const [key, value] = variable.split("=");
         prev[key] = value;
+
         return prev;
       },
       {} as Record<string, string>
