@@ -27,4 +27,5 @@ export interface OutputFile {
   width: number;
   height: number;
   layers?: DrawLayers | DrawLayers[];
+  alpha?: boolean;
 }

@@ -10,6 +10,7 @@ import { fitRect, FitMode } from "./lib/fitRect";
 import { Manifest } from "./lib/manifest";
 import { toBuffer } from "./lib/toBuffer";
 import { flattenRecords } from "./lib/flattenRecords";
+import sharp from "sharp";
 
 export async function drawResizedFromManifest(
   manifestFilePath: string,
@@ -71,9 +72,19 @@ export async function drawResizedFromManifest(
       }
     }
 
-    const buffer = toBuffer(canvas, parsePath(output.filename).ext);
+    const { ext } = parsePath(output.filename);
+    const buffer = toBuffer(canvas, ext);
     await mkdirp(joinPath(manifestFilePath, "..", output.filename, ".."));
     await writeFile(joinPath(manifestFilePath, "..", output.filename), buffer);
+
+    if (output.alpha === false) {
+      await writeFile(
+        joinPath(manifestFilePath, "..", output.filename),
+        await sharp(joinPath(manifestFilePath, "..", output.filename))
+          .flatten()
+          .toBuffer()
+      );
+    }
   }
   return manifest;
 }

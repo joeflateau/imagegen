@@ -13,7 +13,8 @@
       "filename": "out/icon_focus_sd.png",
       "width": 248,
       "height": 140,
-      "layers": { "icon": {} }
+      "layers": { "icon": {} },
+      "alpha": false
     },
     {
       "filename": "out/splash_fhd.jpg",
