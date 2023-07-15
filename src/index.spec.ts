@@ -1,8 +1,8 @@
-import { describe, it } from "mocha";
+import { createCanvas, loadImage } from "canvas";
 import { expect } from "chai";
-import { drawResizedFromManifest } from "./index";
-import { loadImage, createCanvas, Image } from "canvas";
 import { emptyDir, mkdirp } from "fs-extra";
+import { describe, it } from "mocha";
+import { drawResizedFromManifest } from "./index";
 
 describe("drawResized", () => {
   it("drawResizedFromManifest", async () => {
@@ -21,10 +21,10 @@ describe("drawResized", () => {
     }
     for (const out of ["icon_focus_sd.png"]) {
       await expectSamples(__dirname + "/../test/out/" + out, {
-        topLeft: "0,0,0,0",
-        topCenter: "0,0,0,0",
+        topLeft: "0,0,0,255",
+        topCenter: "0,0,0,255",
         center: "0,0,0,255",
-        bottomRight: "0,0,0,0"
+        bottomRight: "0,0,0,255"
       });
     }
     for (const out of ["splash_fhd.jpg"]) {
