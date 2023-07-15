@@ -17,7 +17,7 @@
   "author": "joeflateau",
   "license": "ISC",
   "dependencies": {
-    "canvas": "^2.6.1",
+    "canvas": "^2.11.2",
     "commander": "^5.0.0",
     "fs-extra": "^8.1.0",
     "sharp": "^0.25.3",
